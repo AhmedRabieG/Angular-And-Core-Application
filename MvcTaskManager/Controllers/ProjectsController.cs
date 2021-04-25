@@ -9,31 +9,56 @@ namespace MvcTaskManager.Controllers
 {
     public class ProjectsController : Controller
     {
+        private TaskManagerDbContext db;
+
+        public ProjectsController(TaskManagerDbContext db)
+        {
+            this.db = db;
+        }
+
         [HttpGet]
         [Route("api/projects")]
-        public List<Project> Get()
+        public List<Plan> Get()
         {
-            TaskManagerDbContext db = new TaskManagerDbContext();
-            List<Project> projects = db.Projects.ToList();
+            
+            List<Plan> plans = db.plans.ToList();
+            return plans;
+        }
+
+        [HttpGet]
+        [Route("api/projects/search/{searchby}/{searchtext}")]
+        public List<Plan> Search(string searchBy, string searchText)
+        {
+            
+            List<Plan> projects = null;
+            if (searchBy == "ProjectID")
+                projects = db.plans.Where(temp => temp.ProjectID.ToString().Contains(searchText)).ToList();
+            else if (searchBy == "ProjectName")
+                projects = db.plans.Where(temp => temp.ProjectName.Contains(searchText)).ToList();
+            else if (searchBy == "DateOfStart")
+                projects = db.plans.Where(temp => temp.DateOfStart.ToString().Contains(searchText)).ToList();
+            else if (searchBy == "TeamSize")
+                projects = db.plans.Where(temp => temp.TeamSize.ToString().Contains(searchText)).ToList();
+
             return projects;
         }
 
         [HttpPost]
         [Route("api/projects")]
-        public Project Post([FromBody] Project project)
+        public Plan Post([FromBody] Plan plan)
         {
-            TaskManagerDbContext db = new TaskManagerDbContext();
-            db.Projects.Add(project);
+            
+            db.plans.Add(plan);
             db.SaveChanges();
-            return project;
+            return plan;
         }
 
         [HttpPut]
         [Route("api/projects")]
-        public Project Put([FromBody] Project project)
+        public Plan Put([FromBody] Plan project)
         {
-            TaskManagerDbContext db = new TaskManagerDbContext();
-            Project existingProject = db.Projects.Where(temp => temp.ProjectID == project.ProjectID).FirstOrDefault();
+            
+            Plan existingProject = db.plans.Where(temp => temp.ProjectID == project.ProjectID).FirstOrDefault();
             if (existingProject != null)
             {
                 existingProject.ProjectName = project.ProjectName;
@@ -52,11 +77,11 @@ namespace MvcTaskManager.Controllers
         [Route("api/projects")]
         public int Delete(int ProjectID)
         {
-            TaskManagerDbContext db = new TaskManagerDbContext();
-            Project existingProject = db.Projects.Where(temp => temp.ProjectID == ProjectID).FirstOrDefault();
+            
+            Plan existingProject = db.plans.Where(temp => temp.ProjectID == ProjectID).FirstOrDefault();
             if (existingProject != null)
             {
-                db.Projects.Remove(existingProject);
+                db.plans.Remove(existingProject);
                 db.SaveChanges();
                 return ProjectID;
             }

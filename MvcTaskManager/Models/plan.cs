@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MvcTaskManager.Models
 {
-    public class Project
+    public class Plan
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -19,16 +19,7 @@ namespace MvcTaskManager.Models
         public int TeamSize { get; set; }
     }
 
-    public class TaskManagerDbContext : DbContext
-    {
-        public DbSet<Project> Projects { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer("data source=localhost; integrated security=yes; initial catalog=TaskManager");
-        }
-    }
+    
 }
 
 
