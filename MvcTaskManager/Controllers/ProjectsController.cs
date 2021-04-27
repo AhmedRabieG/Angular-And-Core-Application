@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MvcTaskManager.Models;
 
 namespace MvcTaskManager.Controllers
 {
+    [Authorize]
     public class ProjectsController : Controller
     {
         private TaskManagerDbContext db;
