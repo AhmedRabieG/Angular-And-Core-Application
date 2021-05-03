@@ -196,19 +196,54 @@ namespace MvcTaskManager.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("MvcTaskManager.Models.ClientLocation", b =>
+                {
+                    b.Property<int>("ClientLocationID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClientLocationName");
+
+                    b.HasKey("ClientLocationID");
+
+                    b.ToTable("clientLocations");
+
+                    b.HasData(
+                        new { ClientLocationID = 1, ClientLocationName = "Cairo" },
+                        new { ClientLocationID = 2, ClientLocationName = "Alexandria" },
+                        new { ClientLocationID = 3, ClientLocationName = "Dubai" },
+                        new { ClientLocationID = 4, ClientLocationName = "Kuwait" },
+                        new { ClientLocationID = 5, ClientLocationName = "London" },
+                        new { ClientLocationID = 6, ClientLocationName = "El Reyad" }
+                    );
+                });
+
             modelBuilder.Entity("MvcTaskManager.Models.Plan", b =>
                 {
                     b.Property<int>("ProjectID");
+
+                    b.Property<bool>("Active");
+
+                    b.Property<int>("ClientLocationID");
 
                     b.Property<DateTime>("DateOfStart");
 
                     b.Property<string>("ProjectName");
 
-                    b.Property<int>("TeamSize");
+                    b.Property<string>("Status");
+
+                    b.Property<int?>("TeamSize");
 
                     b.HasKey("ProjectID");
 
+                    b.HasIndex("ClientLocationID");
+
                     b.ToTable("plans");
+
+                    b.HasData(
+                        new { ProjectID = 1, Active = true, ClientLocationID = 2, DateOfStart = new DateTime(2017, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), ProjectName = "Hospital Management System", Status = "In Force", TeamSize = 14 },
+                        new { ProjectID = 2, Active = true, ClientLocationID = 1, DateOfStart = new DateTime(2018, 3, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), ProjectName = "Reporting Tool", Status = "Support", TeamSize = 81 }
+                    );
                 });
 
             modelBuilder.Entity("MvcTaskManager.Models.Test", b =>
@@ -266,6 +301,14 @@ namespace MvcTaskManager.Migrations
                     b.HasOne("MvcTaskManager.Identity.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MvcTaskManager.Models.Plan", b =>
+                {
+                    b.HasOne("MvcTaskManager.Models.ClientLocation", "ClientLocation")
+                        .WithMany()
+                        .HasForeignKey("ClientLocationID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

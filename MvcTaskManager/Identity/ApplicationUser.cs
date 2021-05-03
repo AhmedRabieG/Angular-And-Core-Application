@@ -11,5 +11,7 @@ namespace MvcTaskManager.Identity
     {
         [NotMapped]
         public string Token { get; set; }
+        [NotMapped]
+        public string Role { get; set; }
     }
 }

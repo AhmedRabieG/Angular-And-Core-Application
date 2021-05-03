@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MvcTaskManager.Migrations
 {
-    public partial class Initial : Migration
+    public partial class intialDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -48,17 +48,16 @@ namespace MvcTaskManager.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "plans",
+                name: "clientLocations",
                 columns: table => new
                 {
-                    ProjectID = table.Column<int>(nullable: false),
-                    ProjectName = table.Column<string>(nullable: true),
-                    DateOfStart = table.Column<DateTime>(nullable: false),
-                    TeamSize = table.Column<int>(nullable: false)
+                    ClientLocationID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ClientLocationName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_plans", x => x.ProjectID);
+                    table.PrimaryKey("PK_clientLocations", x => x.ClientLocationID);
                 });
 
             migrationBuilder.CreateTable(
@@ -194,6 +193,52 @@ namespace MvcTaskManager.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "plans",
+                columns: table => new
+                {
+                    ProjectID = table.Column<int>(nullable: false),
+                    ProjectName = table.Column<string>(nullable: true),
+                    DateOfStart = table.Column<DateTime>(nullable: false),
+                    TeamSize = table.Column<int>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    Status = table.Column<string>(nullable: true),
+                    ClientLocationID = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_plans", x => x.ProjectID);
+                    table.ForeignKey(
+                        name: "FK_plans_clientLocations_ClientLocationID",
+                        column: x => x.ClientLocationID,
+                        principalTable: "clientLocations",
+                        principalColumn: "ClientLocationID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "clientLocations",
+                columns: new[] { "ClientLocationID", "ClientLocationName" },
+                values: new object[,]
+                {
+                    { 1, "Cairo" },
+                    { 2, "Alexandria" },
+                    { 3, "Dubai" },
+                    { 4, "Kuwait" },
+                    { 5, "London" },
+                    { 6, "El Reyad" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "plans",
+                columns: new[] { "ProjectID", "Active", "ClientLocationID", "DateOfStart", "ProjectName", "Status", "TeamSize" },
+                values: new object[] { 2, true, 1, new DateTime(2018, 3, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), "Reporting Tool", "Support", 81 });
+
+            migrationBuilder.InsertData(
+                table: "plans",
+                columns: new[] { "ProjectID", "Active", "ClientLocationID", "DateOfStart", "ProjectName", "Status", "TeamSize" },
+                values: new object[] { 1, true, 2, new DateTime(2017, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Hospital Management System", "In Force", 14 });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -232,6 +277,11 @@ namespace MvcTaskManager.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_plans_ClientLocationID",
+                table: "plans",
+                column: "ClientLocationID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -265,6 +315,9 @@ namespace MvcTaskManager.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "clientLocations");
         }
     }
 }

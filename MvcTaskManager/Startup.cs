@@ -31,7 +31,8 @@ namespace MvcTaskManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddEntityFrameworkSqlServer().AddDbContext<TaskManagerDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("MvcTaskManager")));
+            services.AddEntityFrameworkSqlServer().AddDbContext<TaskManagerDbContext>
+                (options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("MvcTaskManager")));
 
             services.AddTransient<IRoleStore<ApplicationRole>, ApplicationRoleStore>();
             services.AddTransient<UserManager<ApplicationUser>, ApplicationUserManager>();
